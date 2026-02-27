@@ -135,6 +135,7 @@ python dashboard_updater.py --action update
 
 **All commands ready to use!** 🎉
 python email_send.py recipient@example.com "Subject" "Message"
+python email_send.py sameena02134@gmail.com "Test Mail" "Hello from AI Employee"
      
 # Send WhatsApp with full tracking
 whatsapp +923222208301 "Message" "Project Name"

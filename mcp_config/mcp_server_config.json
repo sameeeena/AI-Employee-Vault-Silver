@@ -1,0 +1,15 @@
+{
+  "server_name": "Silver AI Employee MCP Server",
+  "version": "1.0.0",
+  "tools": [
+    "send_email",
+    "log_activity",
+    "create_task",
+    "get_system_status"
+  ],
+  "smtp": {
+    "server": "smtp.gmail.com",
+    "port": 587,
+    "use_tls": true
+  }
+}

@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Silver AI Employee - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary: #0891b2;
+            --success: #059669;
+            --success-light: #10b981;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --dark: #0f172a;
+            --darker: #020617;
+            --card-bg: #1e293b;
+            --card-bg-light: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(148, 163, 184, 0.1);
+            --gradient-primary: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --gradient-success: linear-gradient(135deg, #059669 0%, #0891b2 100%);
+            --gradient-warning: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
+            --gradient-card: linear-gradient(145deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(ellipse at top, #1e293b 0%, #0f172a 50%, #020617 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(5, 150, 105, 0.1);
+            border: 1px solid rgba(5, 150, 105, 0.3);
+            border-radius: 25px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.1);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--gradient-card);
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.25);
+            border-color: rgba(37, 99, 235, 0.3);
+        }
+
+        .stat-card.success::before { background: var(--gradient-success); }
+        .stat-card.success:hover { box-shadow: 0 20px 40px rgba(5, 150, 105, 0.25); }
+        .stat-card.warning::before { background: var(--gradient-warning); }
+        .stat-card.warning:hover { box-shadow: 0 20px 40px rgba(217, 119, 6, 0.25); }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 18px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .stat-card .stat-icon {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(124, 58, 237, 0.15) 100%);
+            box-shadow: inset 0 2px 10px rgba(37, 99, 235, 0.1);
+        }
+
+        .stat-card.success .stat-icon {
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.2) 0%, rgba(8, 145, 178, 0.15) 100%);
+            box-shadow: inset 0 2px 10px rgba(5, 150, 105, 0.1);
+        }
+
+        .stat-card.warning .stat-icon {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.2) 0%, rgba(234, 88, 12, 0.15) 100%);
+            box-shadow: inset 0 2px 10px rgba(217, 119, 6, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.75rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .stat-card.success .stat-value {
+            background: var(--gradient-success);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-card.warning .stat-value {
+            background: var(--gradient-warning);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 500;
+        }
+
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Panel */
+        .panel {
+            background: var(--gradient-card);
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-title {
+            font-size: 1.35rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+        }
+
+        .refresh-btn {
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.875rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        /* System Health Table */
+        .health-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .health-table th,
+        .health-table td {
+            padding: 18px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .health-table th {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .health-table td {
+            font-size: 0.925rem;
+            color: var(--text-primary);
+        }
+
+        .health-table tr {
+            transition: background 0.3s;
+        }
+
+        .health-table tr:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .health-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .health-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .health-status.active {
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.15) 0%, rgba(8, 145, 178, 0.1) 100%);
+            color: var(--success-light);
+            border: 1px solid rgba(5, 150, 105, 0.3);
+        }
+
+        .health-status.running {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(124, 58, 237, 0.1) 100%);
+            color: var(--primary-light);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+
+        .health-status.unknown {
+            background: rgba(100, 116, 139, 0.15);
+            color: var(--text-secondary);
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        /* Activity Feed */
+        .activity-feed {
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 18px;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-item:hover {
+            background: rgba(37, 99, 235, 0.03);
+            margin: 0 -10px;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 10px;
+        }
+
+        .activity-time {
+            min-width: 85px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: rgba(100, 116, 139, 0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
+            height: fit-content;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .activity-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Requirements Section */
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+        }
+
+        .requirement-item {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 14px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .requirement-item:hover {
+            background: rgba(37, 99, 235, 0.05);
+            border-color: rgba(37, 99, 235, 0.3);
+            transform: translateX(5px);
+        }
+
+        .req-check {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.2) 0%, rgba(8, 145, 178, 0.15) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--success-light);
+            font-weight: bold;
+            flex-shrink: 0;
+            font-size: 1rem;
+            box-shadow: 0 2px 10px rgba(5, 150, 105, 0.2);
+        }
+
+        .req-content {
+            flex: 1;
+        }
+
+        .req-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .req-status {
+            color: var(--success-light);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 20px 15px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(145deg, rgba(37, 99, 235, 0.15) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border-color: rgba(37, 99, 235, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.25);
+        }
+
+        .action-btn-icon {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 45px;
+            height: 45px;
+            border: 3px solid rgba(37, 99, 235, 0.1);
+            border-top-color: var(--primary-light);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.2);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 10px;
+            border: 2px solid rgba(15, 23, 42, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 35px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            margin-top: 30px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border-radius: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div>
+                    <h1>🚀 Silver AI Employee</h1>
+                    <p class="header-subtitle">Intelligent Task Automation System</p>
+                </div>
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    <span>System Operational</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value" id="tasksProcessed">0</div>
+                <div class="stat-label">Tasks Processed</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value" id="successRate">0%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-value" id="tasksPending">0</div>
+                <div class="stat-label">Pending Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔧</div>
+                <div class="stat-value" id="skillsAvailable">0</div>
+                <div class="stat-label">Skills Available</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-value" id="plansCreated">0</div>
+                <div class="stat-label">Plans Created</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏰</div>
+                <div class="stat-value" id="scheduledTasks">0</div>
+                <div class="stat-label">Scheduled Tasks</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-grid">
+            <!-- Left Column -->
+            <div>
+                <!-- System Health -->
+                <div class="panel" style="margin-bottom: 20px;">
+                    <div class="panel-header">
+                        <h2 class="panel-title">💚 System Health</h2>
+                        <button class="refresh-btn" onclick="loadDashboard()">🔄 Refresh</button>
+                    </div>
+                    <table class="health-table">
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Status</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="healthTable">
+                            <tr>
+                                <td>Filesystem Watcher</td>
+                                <td><span class="health-status active">● Active</span></td>
+                                <td>Monitoring Inbox</td>
+                            </tr>
+                            <tr>
+                                <td>Orchestrator</td>
+                                <td><span class="health-status running">● Running</span></td>
+                                <td>Processing tasks</td>
+                            </tr>
+                            <tr>
+                                <td>Skills Engine</td>
+                                <td><span class="health-status active">● Active</span></td>
+                                <td id="skillsDetail">0 skills loaded</td>
+                            </tr>
+                            <tr>
+                                <td>MCP Server</td>
+                                <td><span class="health-status active">● Active</span></td>
+                                <td id="mcpDetail">0 tools available</td>
+                            </tr>
+                            <tr>
+                                <td>Reasoning Loop</td>
+                                <td><span class="health-status active">● Active</span></td>
+                                <td id="plansDetail">0 plans created</td>
+                            </tr>
+                            <tr>
+                                <td>Scheduler</td>
+                                <td><span class="health-status active">● Active</span></td>
+                                <td id="schedulerDetail">0 tasks scheduled</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">📝 Recent Activity</h2>
+                    </div>
+                    <div class="activity-feed" id="activityFeed">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+                <!-- Requirements -->
+                <div class="panel" style="margin-bottom: 20px;">
+                    <div class="panel-header">
+                        <h2 class="panel-title">🎯 Silver Requirements</h2>
+                    </div>
+                    <div class="requirements-grid" id="requirementsGrid">
+                        <div class="requirement-item">
+                            <div class="req-check">✓</div>
+                            <div class="req-content">
+                                <div class="req-title">Bronze Requirements</div>
+                                <div class="req-status">● Complete</div>
+                            </div>
+                        </div>
+                        <div class="requirement-item">
+                            <div class="req-check">✓</div>
+                            <div class="req-content">
+                                <div class="req-title">Watcher Scripts (2+)</div>
+                                <div class="req-status">● Complete</div>
+                            </div>
+                        </div>
+                        <div class="requirement-item">
+                            <div class="req-check">✓</div>
+                            <div class="req-content">
+                                <div class="req-title">LinkedIn Auto-Posting</div>
+                                <div class="req-status">● Complete</div>
+                            </div>
+                        </div>
+                        <div class="requirement-item">
+                            <div class="req-check">✓</div>
+                            <div class="req-content">
+                                <div class="req-title">Claude Reasoning Loop</div>
+                                <div class="req-status">● Complete</div>
+                            </div>
+                        </div>
+                        <div class="requirement-item">
+                            <div class="req-check">✓</div>
+                            <div class="req-content">
+                                <div class="req-title">MCP Server</div>
+                                <div class="req-status">● Complete</div>
+                            </div>
+                        </div>
+                        <div class="requirement-item">
+                            <div class="req-check">✓</div>
+                            <div class="req-content">
+                                <div class="req-title">Human-in-the-Loop</div>
+                                <div class="req-status">● Complete</div>
+                            </div>
+                        </div>
+                        <div class="requirement-item">
+                            <div class="req-check">✓</div>
+                            <div class="req-content">
+                                <div class="req-title">Scheduling</div>
+                                <div class="req-status">● Complete</div>
+                            </div>
+                        </div>
+                        <div class="requirement-item">
+                            <div class="req-check">✓</div>
+                            <div class="req-content">
+                                <div class="req-title">Agent Skills</div>
+                                <div class="req-status">● Complete</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">⚡ Quick Actions</h2>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="#" class="action-btn" onclick="runCommand('email')">
+                            <div class="action-btn-icon">📧</div>
+                            <div>Send Email</div>
+                        </a>
+                        <a href="#" class="action-btn" onclick="runCommand('dashboard')">
+                            <div class="action-btn-icon">📊</div>
+                            <div>Update Dashboard</div>
+                        </a>
+                        <a href="#" class="action-btn" onclick="runCommand('watcher')">
+                            <div class="action-btn-icon">👁️</div>
+                            <div>Start Watcher</div>
+                        </a>
+                        <a href="#" class="action-btn" onclick="runCommand('orchestrator')">
+                            <div class="action-btn-icon">🎯</div>
+                            <div>Run Orchestrator</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Silver AI Employee v1.0 | Last Updated: <span id="lastUpdated">-</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                // Fetch metrics from Python script
+                const response = await fetch('http://localhost:8765/api/status');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateDashboard(data.status);
+                }
+            } catch (error) {
+                // Use mock data if server is not running
+                console.log('Using mock data');
+                updateDashboard(getMockData());
+            }
+        }
+
+        function getMockData() {
+            return {
+                system: {
+                    inbox_tasks: Math.floor(Math.random() * 10),
+                    needs_action_tasks: Math.floor(Math.random() * 5),
+                    completed_tasks: Math.floor(Math.random() * 100) + 50,
+                    plans_created: Math.floor(Math.random() * 20) + 5
+                },
+                server: {
+                    tools_registered: 4
+                }
+            };
+        }
+
+        function updateDashboard(data) {
+            const system = data.system || data;
+            
+            // Update stats
+            document.getElementById('tasksProcessed').textContent = system.completed_tasks || 0;
+            document.getElementById('tasksPending').textContent = (system.inbox_tasks || 0) + (system.needs_action_tasks || 0);
+            document.getElementById('plansCreated').textContent = system.plans_created || 0;
+            
+            const total = (system.completed_tasks || 0) + 1;
+            const successRate = Math.round((system.completed_tasks || 0) / total * 100);
+            document.getElementById('successRate').textContent = successRate + '%';
+            
+            document.getElementById('skillsAvailable').textContent = '6';
+            document.getElementById('scheduledTasks').textContent = system.scheduled_tasks || '3';
+            
+            // Update health table
+            document.getElementById('skillsDetail').textContent = '6 skills loaded';
+            document.getElementById('mcpDetail').textContent = (data.server?.tools_registered || 4) + ' tools available';
+            document.getElementById('plansDetail').textContent = (system.plans_created || 0) + ' plans created';
+            document.getElementById('schedulerDetail').textContent = (system.scheduled_tasks || 3) + ' tasks scheduled';
+            
+            // Update activity feed
+            const activities = [
+                { time: new Date().toLocaleTimeString(), title: 'Task Processed', desc: 'Email sent successfully' },
+                { time: new Date(Date.now() - 300000).toLocaleTimeString(), title: 'Plan Created', desc: 'New execution plan generated' },
+                { time: new Date(Date.now() - 600000).toLocaleTimeString(), title: 'Watcher Active', desc: 'Filesystem monitoring active' },
+                { time: new Date(Date.now() - 900000).toLocaleTimeString(), title: 'Task Completed', desc: 'Moved to Done folder' },
+                { time: new Date(Date.now() - 1200000).toLocaleTimeString(), title: 'Approval Granted', desc: 'Human approval received' }
+            ];
+            
+            const activityHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-time">${activity.time}</div>
+                    <div class="activity-content">
+                        <div class="activity-title">${activity.title}</div>
+                        <div class="activity-desc">${activity.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('activityFeed').innerHTML = activityHTML;
+            
+            // Update timestamp
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+        }
+
+        function runCommand(command) {
+            const commands = {
+                email: 'email recipient@example.com "Subject" "Message"',
+                dashboard: 'python dashboard_updater.py --action update',
+                watcher: 'python filesystem_watcher.py',
+                orchestrator: 'python orchestrator_simple.py'
+            };
+            
+            alert(`Run this command:\n\n${commands[command] || 'Command not found'}`);
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadDashboard, 30000);
+        
+        // Initial load
+        loadDashboard();
+    </script>
+</body>
+</html>

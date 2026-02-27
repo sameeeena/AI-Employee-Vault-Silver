@@ -13,6 +13,9 @@ google-auth-oauthlib>=1.1.0
 # MCP Server dependencies
 # (aiohttp already listed above)
 
+# Anthropic Claude API (for reasoning loop)
+anthropic>=0.18.0
+
 # Scheduling
 # (Uses built-in libraries + Windows Task Scheduler)
 
